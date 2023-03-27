@@ -1,8 +1,5 @@
 import lombok.SneakyThrows;
-import model.Address;
-import model.Person;
-import model.PersonWithAddress;
-import model.PersonWithAnnotation;
+import model.*;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.junit.Test;
 import org.xlsx.serializer.XLSXSerializer;
@@ -76,4 +73,32 @@ public class CreatingXLSXFileTest {
         workbook.close();
         assertTrue(Files.exists(Paths.get("test4.xlsx")));
     }
+
+    @SneakyThrows
+    @Test
+    public void shouldCreateFileWithNullField() {
+        List<Person> people = new ArrayList<>();
+        Person person = new Person(Utils.drawFirstName(), null);
+        people.add(person);
+        Workbook workbook = XLSXSerializer.serialize(people, Person.class, Arrays.asList("lastname", "firstName"));
+        FileOutputStream fileOutputStream = new FileOutputStream("test5.xlsx");
+        workbook.write(fileOutputStream);
+        workbook.close();
+        assertTrue(Files.exists(Paths.get("test5.xlsx")));
+    }
+
+    @SneakyThrows
+    @Test
+    public void shouldCreateFileWithArrayTypeField() {
+        List<PersonWithArrayTypeField> people = new ArrayList<>();
+        PersonWithArrayTypeField person = new PersonWithArrayTypeField(Utils.drawFirstName(), Utils.drawLastName(), new String[]{"test1", "test2"});
+        people.add(person);
+        Workbook workbook = XLSXSerializer.serialize(people, PersonWithArrayTypeField.class);
+        FileOutputStream fileOutputStream = new FileOutputStream("test6.xlsx");
+        workbook.write(fileOutputStream);
+        workbook.close();
+        assertTrue(Files.exists(Paths.get("test6.xlsx")));
+    }
+
+
 }

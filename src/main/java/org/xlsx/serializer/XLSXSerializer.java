@@ -48,11 +48,17 @@ public class XLSXSerializer {
                 .filter(field -> !field.isAnnotationPresent(OmitField.class)).map(field -> {
                     try {
                         field.setAccessible(true);
-                        return new ValueField(i.getAndIncrement(), field.get(object).toString());
+                        return getValueField(object, i, field);
                     } catch (IllegalAccessException e) {
                         throw new RuntimeException(e);
                     }
                 }).collect(Collectors.toList());
+    }
+
+    private static <T> ValueField getValueField(T object, AtomicInteger i, Field field) throws IllegalAccessException {
+        if (field.getType().isArray() && field.get(object) instanceof String[])
+            return new ValueField(i.getAndIncrement(), field.get(object) == null ? "" : String.join(",", (String[]) field.get(object)));
+        return new ValueField(i.getAndIncrement(), field.get(object) == null ? "" : field.get(object).toString());
     }
 
     private static <T> List<ValueField> getValues(T object) {
@@ -60,7 +66,7 @@ public class XLSXSerializer {
         return Arrays.stream(object.getClass().getDeclaredFields()).filter(field -> !field.isAnnotationPresent(OmitField.class)).map(field -> {
             try {
                 field.setAccessible(true);
-                return new ValueField(i.getAndIncrement(), field.get(object).toString());
+                return getValueField(object, i, field);
             } catch (IllegalAccessException e) {
                 throw new RuntimeException(e);
             }
