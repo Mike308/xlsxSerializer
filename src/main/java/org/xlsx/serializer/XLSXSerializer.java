@@ -56,10 +56,23 @@ public class XLSXSerializer {
     }
 
     private static <T> ValueField getValueField(T object, AtomicInteger i, Field field) throws IllegalAccessException {
-        if (field.getType().isArray() && field.get(object) instanceof String[])
-            return new ValueField(i.getAndIncrement(), field.get(object) == null ? "" : String.join(",", (String[]) field.get(object)));
+        if (field.getType().isArray())
+            return new ValueField(i.getAndIncrement(), convertArrayToString(field.get(object)));
         return new ValueField(i.getAndIncrement(), field.get(object) == null ? "" : field.get(object).toString());
     }
+
+    private static <T> String convertArrayToString(T array) {
+        if (array == null)
+            return "";
+        if (array instanceof String[])
+            return String.join(",", (String[]) array);
+        if (array instanceof int[])
+            return Arrays.stream((int[]) array).boxed().map(t -> Integer.toString(t)).collect(Collectors.joining(","));
+        if (array instanceof double[])
+            return Arrays.stream((double[]) array).boxed().map(t -> Double.toString(t)).collect(Collectors.joining(","));
+         else throw new RuntimeException("Unhandled type of array");
+    }
+
 
     private static <T> List<ValueField> getValues(T object) {
         AtomicInteger i = new AtomicInteger(0);

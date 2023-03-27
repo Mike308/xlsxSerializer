@@ -11,6 +11,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static org.junit.Assert.assertTrue;
 
@@ -91,7 +92,7 @@ public class CreatingXLSXFileTest {
     @Test
     public void shouldCreateFileWithArrayTypeField() {
         List<PersonWithArrayTypeField> people = new ArrayList<>();
-        PersonWithArrayTypeField person = new PersonWithArrayTypeField(Utils.drawFirstName(), Utils.drawLastName(), new String[]{"test1", "test2"});
+        PersonWithArrayTypeField person = new PersonWithArrayTypeField(Utils.drawFirstName(), Utils.drawLastName(), new String[]{"test1", "test2"}, new int[]{1, 4, 8}, new double[]{5.9, 8.1});
         people.add(person);
         Workbook workbook = XLSXSerializer.serialize(people, PersonWithArrayTypeField.class);
         FileOutputStream fileOutputStream = new FileOutputStream("test6.xlsx");
@@ -99,6 +100,5 @@ public class CreatingXLSXFileTest {
         workbook.close();
         assertTrue(Files.exists(Paths.get("test6.xlsx")));
     }
-
 
 }

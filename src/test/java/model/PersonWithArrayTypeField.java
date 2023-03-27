@@ -12,5 +12,7 @@ public class PersonWithArrayTypeField {
     private String firstName;
     private String lastname;
     private String[] attributes;
+    private int[] integerAttributes;
+    private double[] doubles;
 
 }
