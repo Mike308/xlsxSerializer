@@ -70,7 +70,11 @@ public class XLSXSerializer {
             return Arrays.stream((int[]) array).boxed().map(t -> Integer.toString(t)).collect(Collectors.joining(","));
         if (array instanceof double[])
             return Arrays.stream((double[]) array).boxed().map(t -> Double.toString(t)).collect(Collectors.joining(","));
-         else throw new RuntimeException("Unhandled type of array");
+        if (array instanceof  Integer[])
+            return Arrays.stream((Integer[]) array).map(t -> Integer.toString(t)).collect(Collectors.joining(","));
+        if (array instanceof Double[])
+            return Arrays.stream((Double[]) array).map(t -> Double.toString(t)).collect(Collectors.joining(","));
+        else throw new RuntimeException("Unhandled type of array");
     }
 
 
